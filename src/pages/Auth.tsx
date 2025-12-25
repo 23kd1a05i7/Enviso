@@ -9,6 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Shield, Eye, EyeOff } from "lucide-react";
 
+// Dev helper: set `VITE_USE_MOCK_AUTH=true` in your `.env` to bypass Supabase (local-only)
+const USE_MOCK_AUTH = import.meta.env.VITE_USE_MOCK_AUTH === "true";
+
 const Auth = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +19,11 @@ const Auth = () => {
 
   useEffect(() => {
     const checkUser = async () => {
+      if (USE_MOCK_AUTH) {
+        // In mock mode assume no session (you can immediately sign in using mock handlers)
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         navigate("/dashboard");
@@ -37,6 +45,14 @@ const Auth = () => {
     const relationship = formData.get("relationship") as string;
 
     try {
+      if (USE_MOCK_AUTH) {
+        // Simulate network delay and successful creation in dev mode
+        await new Promise((r) => setTimeout(r, 400));
+        toast.success("[DEV] Mock account created successfully!");
+        navigate("/dashboard");
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -80,6 +96,13 @@ const Auth = () => {
     const password = formData.get("signin-password") as string;
 
     try {
+      if (USE_MOCK_AUTH) {
+        await new Promise((r) => setTimeout(r, 300));
+        toast.success("[DEV] Mock sign in successful");
+        navigate("/dashboard");
+        return;
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,

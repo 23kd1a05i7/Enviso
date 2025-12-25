@@ -5,6 +5,11 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// Debug: print env values so we can confirm Vite loaded them correctly
+// (This will appear in the browser console when the app runs)
+console.log('DEBUG: VITE_SUPABASE_URL=', SUPABASE_URL);
+console.log('DEBUG: VITE_SUPABASE_PUBLISHABLE_KEY=', SUPABASE_PUBLISHABLE_KEY ? SUPABASE_PUBLISHABLE_KEY.slice(0,10) + '...' : SUPABASE_PUBLISHABLE_KEY);
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
